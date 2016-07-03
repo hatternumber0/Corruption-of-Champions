@@ -1,4 +1,4 @@
-﻿package classes
+package classes
 {
 	import fl.controls.UIScrollBar;
 	import flash.display.Loader;
@@ -41,6 +41,9 @@
 
 		private static const XML_IMAGES:Class;
 		private var _imgListXML:XML;
+		
+		private var lastUsedImageID:String = "";    // Hn0 - Saves the name of the last loaded image
+		private var lastUsedImage:Image = null;    // Hn0 - Saves the address of the last loaded image
 
 		public function ImageManager(stage:Stage)
 		{
@@ -207,12 +210,22 @@
 			var image:Image = null;
 			if (_imageTable[imageID] != undefined)
 			{
-				// More than 1 image? Pick one at random.
-				if (_imageTable[imageID].length > 0)
+				// Hn0 - Added IF statement. Will check if the current image to load is the same as the last one.
+                if (imageID == lastUsedImageID && imageID.indexOf("monster-") >=0)
+                {
+                    image = lastUsedImage; // Hn0 - Sets the requested image to be the same as the last one
+                }
+				else 
 				{
-					imageIndex = Math.floor( Math.random() * _imageTable[imageID].length );
-					if (logErrors) trace("Have multiple image possibilities. Displaying image", imageIndex, "selected randomly.");
-					image = _imageTable[imageID][imageIndex];
+					lastUsedImageID = imageID // Hn0 - Saves the new image ID being requested
+					// More than 1 image? Pick one at random.
+					if (_imageTable[imageID].length > 0)
+					{
+						imageIndex = Math.floor( Math.random() * _imageTable[imageID].length );
+						if (logErrors) trace("Have multiple image possibilities. Displaying image", imageIndex, "selected randomly.");
+						image = _imageTable[imageID][imageIndex];
+						lastUsedImage = image; // Hn0 - Saves the address of the new image being requested
+					}
 				}
 			}
 
